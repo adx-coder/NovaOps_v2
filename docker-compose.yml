@@ -4,7 +4,7 @@ services:
     image: rancher/k3s:latest
     command: server --tls-san=k3s --disable=traefik
     environment:
-      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_OUTPUT=/output/config
       - K3S_KUBECONFIG_MODE=666
     volumes:
       - k3s-config:/output
@@ -55,7 +55,7 @@ services:
       - S3_ENDPOINT=http://localstack:4566
       - S3_PUBLIC_ENDPOINT=http://localhost:4566
       - NOVAOPS_LOG_PATH=/var/log/novaops/novaops.log
-      - NOVAOPS_USE_MOCK=1
+      - NOVAOPS_USE_MOCK=${NOVAOPS_USE_MOCK:-0}
     volumes:
       - ./runbooks:/app/runbooks:rw     # Mount runbooks for TF-IDF indexing
       - ./plans:/app/plans:rw           # Mount plans so host and container share incident state

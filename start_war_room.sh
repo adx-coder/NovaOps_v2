@@ -35,6 +35,10 @@ echo "🐳 [2/2] Booting Kubernetes, Backend API, and AWS LocalStack (Docker)...
 docker compose down >> "$LOG_FILE" 2>&1 || true
 docker compose up -d --build >> "$LOG_FILE" 2>&1
 
+echo "🔌 Rewriting Kubeconfig internal networking for API container..."
+sleep 5  # Give k3s time to generate the config file
+docker compose exec novaops-api sed -i 's/127.0.0.1/k3s/g' /root/.kube/config || true
+
 # Tail Docker logs in the background and append them to our global log stream
 docker compose logs -f >> "$LOG_FILE" 2>&1 &
 DOCKER_LOG_PID=$!
