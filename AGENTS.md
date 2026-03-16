@@ -6,7 +6,7 @@
 
 NovaOps v2 is a multi-agent SRE war room for production incident response.
 It investigates alerts using specialist agents, builds hypotheses with evidence,
-validates through an independent blind jury, routes through a governance gate,
+validates through an independent consensus engine, routes through a governance gate,
 and escalates critical incidents via outbound phone calls powered by
 Amazon Connect + Nova real-time conversation.
 
@@ -32,10 +32,10 @@ Critic Agent (adversarial review, max 3 loops)
     +--> pass -> Remediation Planner
                     |
                     v
-              Jury Validation (4 independent jurors, parallel)
+              Consensus Validation (4 independent validators, parallel)
                     |
                     v
-              Convergence Check (War Room vs Jury agreement)
+              Convergence Check (War Room vs Consensus agreement)
                     |
                     v
               Governance Gate (risk score + policy)
@@ -60,9 +60,9 @@ Critic Agent (adversarial review, max 3 loops)
 | Path | Purpose |
 |------|---------|
 | `agents/` | War Room orchestration graph, prompts, schemas, artifacts, PIR generation |
-| `Agent_Jury/` | Jury pipeline -- 4 specialist jurors + Judge + Escalation Gate |
-| `agent/` | nova_client.py -- Bedrock client used by Jury jurors |
-| `pipeline/` | convergence.py -- War Room vs Jury agreement check |
+| `Agent_Jury/` | Consensus pipeline -- 4 specialist validators + Synthesizer + Escalation Gate |
+| `agent/` | nova_client.py -- Bedrock client used by consensus agents |
+| `pipeline/` | convergence.py -- War Room vs Consensus agreement check |
 | `aggregator/` | Data fetchers for logs, metrics, Kubernetes, GitHub (live + mock) |
 | `api/` | FastAPI server, history DB, Slack notifier, escalation policy, voice summary, Connect caller |
 | `lambda_handlers/` | Lambda function for Lex V2 fulfillment -- bridges phone audio to Nova real-time |

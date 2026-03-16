@@ -15,7 +15,7 @@ Built for Enterprise scale incident management using Amazon Nova foundational mo
 - **Slack Critical Escalation**: High-visibility fallback Slack messages with call status, escalation reasons, and approval buttons — sent alongside or instead of the phone call.
 - **Amazon Nova Sonic Integration**: Live, real-time simulated voice calls via AWS Bedrock for human-in-the-loop action approval.
 - **Unified Telemetry Dashboard**: Complete, colorized logging of all War Room, Jury, and API operations piped directly into a single `novaops_system.log` stream.
-- **Streamlined Evaluation Engine**: A refined 4-script demonstration framework executing automated system orchestration, mock scenario injection, and live failure testing.
+- **Streamlined Operation & Deployment**: A refined 4-script demonstration framework executing automated system orchestration, sandboxed scenario injection, and live failure testing.
 - Jury deliberation now executes concurrently via `ThreadPoolExecutor` with per-juror timeout isolation.
 - Jury GitHub context is now configurable by service using `SERVICE_REPO_MAP` and can be overridden per alert using webhook `metadata.github`.
 - Governance now hard-gates convergence disagreements and jury escalations to `REQUIRE_APPROVAL` regardless of policy auto-allow.
@@ -256,9 +256,9 @@ pip install -r requirements.txt
 NOVAOPS_USE_MOCK=1 python -m agents.main "P2 OOM alert on payment-service in prod"
 ```
 
-## Judge Guide: Prerequisites & Setup
+## Onboarding: Rapid Deployment Guide
 
-To ensure a smooth evaluation, please follow these steps before running the system.
+To ensure a smooth deployment, please follow these steps before running the system.
 
 ### 1. AWS Foundation Model Access
 You must have access to the **Amazon Nova 2 Lite** model in your AWS account.
@@ -295,15 +295,15 @@ NOVA_MODEL_ID=us.amazon.nova-2-lite-v1:0
 ```
 *(Note: If using LocalStack for everything except Bedrock, dummy keys `test`/`test` will work for DynamoDB/S3, but real keys are required for Bedrock analysis.)*
 
-### 4. One-Time System Preparation
-Run the setup script to install dependencies, create a virtual environment, and pre-pull Docker/Kubernetes images. This ensures live simulations trigger instantly.
+### 4. Initialization
+Run the bootstrap script to install dependencies, create a virtual environment, and pre-warm local environments (S3, DynamoDB, Minikube). This ensures the system is ready for immediate operation.
 ```bash
 ./setup_mini_system.sh
 ```
 
 ---
 
-## Evaluation & Demonstration
+## Operational Readiness & Performance Validation
 
 To seamlessly evaluate the entire Amazon Nova Auto-SRE ecosystem from start to finish, you only need to execute four simple scripts in order:
 
@@ -325,7 +325,7 @@ Fires 7 deterministic, test-case incidents into the AWS Bedrock pipeline. This p
 Forces an Out-Of-Memory (OOM) leak on a live Kubernetes service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
 
 > [!NOTE]
-> If you are running this for the first time, it is highly recommended to run `./setup_mini_system.sh` first. This "pre-warms" the cluster and builds necessary images so the live outage triggers instantly without image pulling delays.
+> If you are running this for the first time, it is highly recommended to run `./setup_mini_system.sh` first. This "pre-warms" the cluster and builds necessary images so the live outage triggers instantly.
 
 ```bash
 ./trigger_live_outage.sh
