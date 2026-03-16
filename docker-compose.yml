@@ -1,4 +1,19 @@
 services:
+  k3s:
+    container_name: k3s
+    image: rancher/k3s:latest
+    command: server --tls-san=k3s --disable=traefik
+    environment:
+      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_MODE=666
+    volumes:
+      - k3s-config:/output
+    ports:
+      - "6443:6443"
+    privileged: true
+    networks:
+      - novaops_net
+
   localstack:
     container_name: localstack
     image: localstack/localstack:latest
@@ -41,7 +56,8 @@ services:
     volumes:
       - ./runbooks:/app/runbooks:rw     # Mount runbooks for TF-IDF indexing
       - ./plans:/app/plans:rw           # Mount plans so host and container share incident state
-      - novaops-logs:/var/log/novaops   # Persist logs without host file pre-creation
+      - ./logs:/var/log/novaops:rw      # Persist logs where host has open permissions
+      - k3s-config:/root/.kube          # Mount k3s config for live cluster control
     command: sh -c "mkdir -p /var/log/novaops && touch /var/log/novaops/novaops.log && uvicorn api.server:app --host 0.0.0.0 --port 8000"
     depends_on:
       localstack:
@@ -50,6 +66,7 @@ services:
       - novaops_net
 
 volumes:
+  k3s-config:
   localstack-data:
   novaops-logs:
 

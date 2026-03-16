@@ -1,51 +1,41 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Minikube to simulate production cluster..."
-minikube start
+echo "🚀 Starting Live Simulation..."
 
-export PATH="$PWD/bin:$PATH"
-
-# Function to wrap kubectl calls with minikube fallback
+# Function to wrap kubectl calls with k3s docker container 
 kubectl() {
-    if command -v kubectl &> /dev/null && [ "$(type -t kubectl)" != "function" ]; then
-        command kubectl "$@"
-    else
-        minikube kubectl -- "$@"
-    fi
+    docker compose exec -T k3s kubectl "$@"
 }
 
-echo "🐳 Pointing Docker to Minikube daemon..."
-eval $(minikube docker-env)
+echo "🔍 Checking if K3s is running..."
+if ! docker compose ps | grep -q "k3s"; then
+    echo "❌ K3s container is not running. Please run ./start_war_room.sh first."
+    exit 1
+fi
 
 echo "📦 Building dummy-service..."
 docker build -t dummy-service:latest ./dummy-service
+echo "📥 Importing image into K3s..."
+docker save dummy-service:latest | docker compose exec -T k3s ctr images import -
 
 echo "🚀 Deploying dummy-service to Kubernetes..."
-kubectl apply -f dummy-service/k8s.yaml
+cat dummy-service/k8s.yaml | kubectl apply -f -
 
 echo "⏳ Waiting for dummy-service pod to be ready..."
 kubectl wait --for=condition=ready pod -l app=dummy-service --timeout=120s
 
-echo "🔌 Port forwarding local port 8080..."
-kubectl port-forward svc/dummy-service 8080:8080 > /dev/null 2>&1 &
-PF_PID=$!
-sleep 5
-
 echo "💥 Forcing Memory Leak (OOM) inside dummy-service..."
-for i in {1..15}; do
-  curl -s http://localhost:8080/memory-leak > /dev/null || true
-  sleep 0.5
-done
+kubectl run tmp-curl --rm -i --restart=Never --image=curlimages/curl -- \
+    sh -c 'for i in $(seq 1 15); do curl -s http://dummy-service:8080/memory-leak > /dev/null || true; sleep 0.5; done'
+
 sleep 3
 
 echo "💀 OOM Leak successful. dummy-service pod should be CrashLoop-ing now."
-kill $PF_PID || true
 
 echo "🕵️‍♀️  Starting Live NovaOps Agent to detect and analyze the OOM..."
-./venv/bin/python run_live_agent.py
+# In a pure dockerized setup the run_live_agent wouldn't rely on local python venv, 
+# it can rely on the python runtime from novaops-api docker container instead
+docker compose exec -T novaops-api python run_live_agent.py
 
-echo "🧹 Stopping Minikube..."
-minikube stop
-
-echo "🎉 Live simulation script entirely completed."
+echo "🎉 Live simulation script completed."

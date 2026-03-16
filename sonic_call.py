@@ -21,7 +21,7 @@ except ImportError:
     pass
 
 # Configuration
-API_URL = "http://localhost:8082"
+API_URL = "http://novaops-api:8000"
 SONIC_MODEL_ID = os.environ.get("NOVA_MODEL_ID", "us.amazon.nova-2-lite-v1:0")
 
 # Audio Config

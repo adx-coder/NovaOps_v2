@@ -21,10 +21,9 @@ This guide provides a step-by-step framework to validate the deployment, archite
 Before operationalizing NovaOps, ensure the following prerequisites are met:
 
 1. **AI Infrastructure**: Professional AWS Bedrock access for Amazon Nova 2 models.
-2. **Persistence Layer**: Scalable DynamoDB (LocalStack or AWS) for incident history.
-3. **Artifact Storage**: S3 buckets for Post-Incident Reports (PIR).
-4. **Control Plane**: Operational backend API (`docker compose up -d`).
-5. **Human-in-the-Loop**: Configured Amazon Connect or Slack for critical escalation.
+2. **Artifact Storage**: AWS Credentials configured in `.env` for the api container.
+3. **Control Plane**: Operational backend API (`./start_war_room.sh`).
+4. **Human-in-the-Loop**: Configured Amazon Connect or Slack for critical escalation.
 
 ---
 
@@ -34,7 +33,7 @@ Before operationalizing NovaOps, ensure the following prerequisites are met:
 
 Validate that NovaOps can autonomously investigate and remediate resource exhaustion.
 
-1. **Trigger**: Execute `simulate_incident.sh` (or `trigger_live_outage.sh`).
+1. **Trigger**: Execute `docker compose exec -T novaops-api python -m evaluation --all` (or `./trigger_live_outage.sh`).
 2. **Observation**: Monitor the **Consensus Dashboard** (`http://localhost:8082/dashboard/`).
 3. **Verification**: 
    - Confirm parallel dispatch of specialized agents.
@@ -45,7 +44,7 @@ Validate that NovaOps can autonomously investigate and remediate resource exhaus
 
 Test the real-time voice escalation path for critical P1 incidents.
 
-1. **Action**: Ensure `NOVAOPS_VOICE_USE_MOCK=false` for live testing (or `true` for protocol validation).
+1. **Action**: Ensure `NOVAOPS_VOICE_USE_MOCK=false` inside the api container for live testing.
 2. **Process**: When the scenario hits the risk threshold, verify an outbound call triggers via Amazon Connect.
 3. **Approval**: Speak with the Nova real-time agent to approve the remediation verbally.
 4. **Audit**: Verify the path from verbal approval to automated execution is logged in the append-only audit trail.
@@ -62,7 +61,7 @@ Confirm the automated generation of professional compliance artifacts.
 
 ## Technical Architecture Highlights
 
+- **Zero-Install Deployment**: The whole environment is completely containerised running in a self-sufficient k3s docker network.
 - **Parallel Orchestration**: Concurrent agent execution minimizes Time-To-Mitigate (TTM).
 - **Independent Consensus**: Prevents architectural groupthink by separating primary investigation from validation logic.
-- **Plug-and-Play Integration**: LocalStack integration allows for full offline testing before flipping to production AWS infrastructure.
 - **Audit Compliance**: Every decision is traceable, validated against schemas, and stored in non-repudiable logs.

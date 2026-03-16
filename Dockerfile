@@ -7,9 +7,10 @@ ENV PYTHONPATH=/app
 
 WORKDIR /app
 
-# System dependencies (curl for healthchecks)
+# System dependencies (curl for healthchecks, portaudio for sonic calls)
 RUN apt-get update && apt-get install -y \
     curl \
+    portaudio19-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies (no PyTorch needed — we use TF-IDF)

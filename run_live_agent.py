@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 # Load real AWS credentials for Bedrock to use, but keep DYNAMO and S3 pointing to LocalStack
 load_dotenv()
-os.environ["DYNAMODB_ENDPOINT"] = "http://localhost:4566"
-os.environ["S3_ENDPOINT"] = "http://localhost:4566"
+os.environ["DYNAMODB_ENDPOINT"] = "http://localstack:4566"
+os.environ["S3_ENDPOINT"] = "http://localstack:4566"
 os.environ["NOVAOPS_USE_MOCK"] = "0"
 
 from agents.main import run

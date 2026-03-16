@@ -2,8 +2,8 @@
 set -e
 
 # ==============================================================================
-# NovaOps v2 — Global Start Script
-# Spin up the entire system (Docker APIs + Minikube K8s) and pipe all stdout 
+# NovaOps - Zero-Install Global Start Script
+# Spin up the entire system (Docker APIs + K3s Kubernetes) and pipe all stdout 
 # to a single consolidated log file in the background.
 # ==============================================================================
 
@@ -22,8 +22,15 @@ echo "🌟 Starting NovaOps System Ecosystem..."
 echo "📂 All background logs are actively piping into: $LOG_FILE"
 echo ""
 
-# 1. Start Docker Backend (API + LocalStack)
-echo "🐳 [1/2] Booting Backend API and AWS LocalStack (Docker)..."
+# 1. Pre-Create Directories to Prevent Docker Root Ownership Issues
+echo "📁 [1/2] Initializing required volume directories..."
+mkdir -p ./plans ./runbooks ./logs
+chmod 777 ./plans ./runbooks
+# Ensure everyone can write to the log dir too
+chmod 777 ./logs
+
+# 2. Start Docker Backend (API + LocalStack + K3s)
+echo "🐳 [2/2] Booting Kubernetes, Backend API, and AWS LocalStack (Docker)..."
 # Ensure previous containers are stopped to avoid name conflicts
 docker compose down >> "$LOG_FILE" 2>&1 || true
 docker compose up -d --build >> "$LOG_FILE" 2>&1
@@ -33,16 +40,11 @@ docker compose logs -f >> "$LOG_FILE" 2>&1 &
 DOCKER_LOG_PID=$!
 echo "$DOCKER_LOG_PID" >> "$PID_FILE"
 
-# 2. Start Kubernetes Minikube
-echo "🚀 [2/2] Booting Kubernetes Minikube Cluster..."
-# We pipe minikube start to the background log so it doesn't clutter the terminal
-minikube start >> "$LOG_FILE" 2>&1
-
 echo ""
 echo "✅ System is fully online and ready!"
 echo "   - Dashboard UI:    http://localhost:8082/dashboard/"
 echo "   - API Swagger      http://localhost:8082/docs"
-echo "   - K8s Cluster:     minikube is running natively"
+echo "   - K8s Cluster:     Running inside 'k3s' docker container"
 echo ""
 echo "🔥 Want to see the merged logs? Run: tail -f $LOG_FILE"
 echo "🛑 Want to shut down cleanly?  Run: ./stop_war_room.sh"

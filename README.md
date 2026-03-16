@@ -243,58 +243,23 @@ tests/          124 unit + integration tests
 
 ---
 
-## Quick Start
+## Quick Start (Zero-Install)
 
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Onboarding: Rapid Deployment Guide
-
-To ensure a smooth deployment, please follow these steps before running the system.
+The entire NovaOps environment runs inside isolated Docker containers (including a K3s Kubernetes cluster). You only require `docker` and `docker compose` installed on your machine.
 
 ### 1. AWS Foundation Model Access
 You must have access to the **Amazon Nova 2 Lite** model in your AWS account.
 - Go to **Amazon Bedrock Console** -> **Model access**.
 - Ensure **Amazon Nova 2 Lite** is granted.
 
-### 2. AWS IAM Permissions
-The user executing the scripts (e.g., `novaops-user`) requires the following IAM policy to interact with Bedrock:
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "bedrock:InvokeModel",
-                "bedrock:InvokeModelWithResponseStream"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-If you are setting this project up on a new machine or AWS account for evaluation, please refer to the [AWS Permissions Guide](AWS_PERMISSIONS_GUIDE.md) before executing the scripts. **Amazon Bedrock Foundation Model Access must be explicitly granted in the AWS console.**
-
-### 3. Environment Setup (`.env`)
-Create a `.env` file in the root directory with your AWS credentials. These are used by the agents running on your host machine to talk to Bedrock and LocalStack.
+### 2. Environment Setup (`.env`)
+Create a `.env` file in the root directory with your AWS credentials. These are used by the proxy to talk to Bedrock.
 
 ```bash
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_DEFAULT_REGION=us-east-1
 NOVA_MODEL_ID=us.amazon.nova-2-lite-v1:0
-```
-*(Note: If using LocalStack for everything except Bedrock, dummy keys `test`/`test` will work for DynamoDB/S3, but real keys are required for Bedrock analysis.)*
-
-### 4. Initialization
-Run the bootstrap script to install dependencies, create a virtual environment, and pre-warm local environments (S3, DynamoDB, Minikube). This ensures the system is ready for immediate operation.
-```bash
-./setup_system.sh
 ```
 
 ---
@@ -304,7 +269,7 @@ Run the bootstrap script to install dependencies, create a virtual environment, 
 To seamlessly evaluate the entire Amazon Nova Auto-SRE ecosystem from start to finish, you only need to execute four simple scripts in order:
 
 ### 1. Start the System
-Brings the entire backend API, LocalStack, and K8s Minikube online. All logs are piped into one master log file.
+Brings the entire backend API, LocalStack, and K3s cluster online inside Docker. All logs are piped into one master log file.
 ```bash
 ./start_war_room.sh
 ```
@@ -313,14 +278,12 @@ Brings the entire backend API, LocalStack, and K8s Minikube online. All logs are
 ### 2. Run 7 Simulated Incidents (Mocked)
 Fires 7 deterministic, test-case incidents into the AWS Bedrock pipeline. This populates your dashboard with rich War Room and Jury investigation records to evaluate system performance.
 ```bash
-./run_simulations.sh
+docker compose exec -T novaops-api python -m evaluation --all
 ```
 *Open `http://localhost:8082/dashboard/` to view their deep analysis.*
 
-### 3. Run a Live System Failure (Minikube + Nova Sonic)
-Forces an Out-Of-Memory (OOM) leak on a live Kubernetes service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
-> [!NOTE]
-> If you are running this for the first time, it is highly recommended to run `./setup_system.sh` first. This "pre-warms" the cluster and builds necessary images so the live outage triggers instantly.
+### 3. Run a Live System Failure
+Forces an Out-Of-Memory (OOM) leak on a live K3s service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
 ```bash
 ./trigger_live_outage.sh
 ```
