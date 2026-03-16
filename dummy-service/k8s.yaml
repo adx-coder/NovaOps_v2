@@ -1,25 +1,17 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   name: dummy-service
   namespace: default
   labels:
     app: dummy-service
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: dummy-service
-  template:
-    metadata:
-      labels:
-        app: dummy-service
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
-        prometheus.io/path: "/metrics"
-    spec:
-      containers:
+  restartPolicy: Never
+  containers:
       - name: dummy-service
         image: dummy-service:latest
         imagePullPolicy: Never

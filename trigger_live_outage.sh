@@ -20,6 +20,8 @@ echo "📥 Importing image into K3s..."
 docker save dummy-service:latest | docker compose exec -T k3s ctr images import -
 
 echo "🚀 Deploying dummy-service to Kubernetes..."
+kubectl delete deployment dummy-service --ignore-not-found 2>/dev/null || true
+kubectl delete pod dummy-service --force --grace-period=0 --ignore-not-found 2>/dev/null || true
 cat dummy-service/k8s.yaml | kubectl apply -f -
 
 echo "⏳ Waiting for dummy-service pod to be ready..."
