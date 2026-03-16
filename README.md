@@ -295,7 +295,7 @@ NOVA_MODEL_ID=us.amazon.nova-2-lite-v1:0
 ### 4. Initialization
 Run the bootstrap script to install dependencies, create a virtual environment, and pre-warm local environments (S3, DynamoDB, Minikube). This ensures the system is ready for immediate operation.
 ```bash
-./setup_mini_system.sh
+./setup_system.sh
 ```
 
 ---
@@ -320,6 +320,8 @@ Fires 7 deterministic, test-case incidents into the AWS Bedrock pipeline. This p
 
 ### 3. Run a Live System Failure (Minikube + Nova Sonic)
 Forces an Out-Of-Memory (OOM) leak on a live Kubernetes service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
+> [!NOTE]
+> If you are running this for the first time, it is highly recommended to run `./setup_system.sh` first. This "pre-warms" the cluster and builds necessary images so the live outage triggers instantly.
 ```bash
 ./trigger_live_outage.sh
 ```
