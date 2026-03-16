@@ -1,6 +1,6 @@
 #!/bin/bash
-# setup.sh — Docker group activation + make scripts executable
-# Run with: bash setup.sh
+# NewSetup.sh — Docker group activation + make scripts executable
+# Run with: bash NewSetup.sh
  
 set -e
  
