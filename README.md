@@ -251,9 +251,6 @@ tests/          124 unit + integration tests
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
-# Run in fully offline mock mode (no Bedrock spend)
-NOVAOPS_USE_MOCK=1 python -m agents.main "P2 OOM alert on payment-service in prod"
 ```
 
 ## Onboarding: Rapid Deployment Guide
