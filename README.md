@@ -390,7 +390,7 @@ Scenarios cover: `oom`, `traffic_surge`, `deadlock`, `config_drift`, `dependency
 ## Tests
 
 ```bash
-python -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -v
 # 124 tests (unit + integration)
 ```
 
