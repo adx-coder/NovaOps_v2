@@ -10,13 +10,13 @@ Built for Enterprise scale incident management using Amazon Nova foundational mo
 
 ## Latest Release Features
 
+- **Enterprise-Grade Architectural Rebranding**: Transitioned conceptually to a Consensus-driven validation model featuring the **Consensus Engine** and **Independent Validators**, supported by a new professional **Onboarding & Operational Validation** guide.
+- **Enhanced Operational Stability & Hardening**: Implemented self-healing system startups, robust cross-environment `kubectl` orchestration, and high-fidelity failure investigation logging for 100% visibility in the telemetry dashboard.
 - **Critical Incident Voice Escalation via Amazon Connect**: Outbound phone calls to on-call engineers for critical incidents (P1 / high risk score), powered by Amazon Nova real-time conversation through a Lex + Lambda bridge. Verbal approval triggers remediation through the existing governance gate. Falls back to Slack critical escalation if the call fails.
 - **Escalation Policy Engine**: Configurable severity and risk-score thresholds determine which incidents trigger voice escalation vs standard Slack notification. Auto-executed incidents are automatically skipped.
 - **Slack Critical Escalation**: High-visibility fallback Slack messages with call status, escalation reasons, and approval buttons — sent alongside or instead of the phone call.
 - **Amazon Nova Sonic Integration**: Live, real-time simulated voice calls via AWS Bedrock for human-in-the-loop action approval.
 - **Unified Telemetry Dashboard**: Complete, colorized logging of all War Room, Jury, and API operations piped directly into a single `novaops_system.log` stream.
-- **Enterprise-Grade Architectural Rebranding**: Transitioned conceptually to a Consensus-driven validation model featuring the **Consensus Engine** and **Independent Validators**, supported by a new professional **Onboarding & Operational Validation** guide.
-- **Enhanced Operational Stability & Hardening**: Implemented self-healing system startups, robust cross-environment `kubectl` orchestration, and high-fidelity failure investigation logging for 100% visibility in the telemetry dashboard.
 
 ---
 
