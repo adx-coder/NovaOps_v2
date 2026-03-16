@@ -251,9 +251,6 @@ tests/          124 unit + integration tests
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
-# Run in fully offline mock mode (no Bedrock spend)
-NOVAOPS_USE_MOCK=1 python -m agents.main "P2 OOM alert on payment-service in prod"
 ```
 
 ## Onboarding: Rapid Deployment Guide
@@ -323,10 +320,6 @@ Fires 7 deterministic, test-case incidents into the AWS Bedrock pipeline. This p
 
 ### 3. Run a Live System Failure (Minikube + Nova Sonic)
 Forces an Out-Of-Memory (OOM) leak on a live Kubernetes service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
-
-> [!NOTE]
-> If you are running this for the first time, it is highly recommended to run `./setup_mini_system.sh` first. This "pre-warms" the cluster and builds necessary images so the live outage triggers instantly.
-
 ```bash
 ./trigger_live_outage.sh
 ```
