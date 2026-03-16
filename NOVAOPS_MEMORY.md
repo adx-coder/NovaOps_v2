@@ -117,7 +117,7 @@ Last updated: 2026-03-15
    - `README.md` -- added voice escalation section, updated pipeline diagram, env vars, artifacts, test count
    - `AGENTS.md` -- updated architecture, directories, artifacts, env vars
    - `AWS_PERMISSIONS_GUIDE.md` -- added Connect/Lex IAM permissions
-   - `EVALUATION_GUIDE.md` -- added voice escalation demo phase
+   - `OPERATIONAL_VALIDATION.md` -- added voice escalation demo phase
    - `project_context.md` -- rewritten to match current architecture
    - `.env.example` -- created with all env vars documented
 
