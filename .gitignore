@@ -25,3 +25,8 @@ tests/.tmp/
 bin/
 plans/
 runbooks/
+*.mp4
+*.mp3
+*.mov
+*.avi
+ad/

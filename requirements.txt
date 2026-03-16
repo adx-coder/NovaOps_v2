@@ -29,3 +29,6 @@ pyyaml>=6.0.0
 numpy>=2.2.0
 sounddevice>=0.4.6
 soundfile>=0.12.1
+
+# Infrastructure Utilities
+awscli-local>=0.22.0
