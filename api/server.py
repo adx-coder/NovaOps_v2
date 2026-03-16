@@ -90,9 +90,9 @@ def _configure_logging() -> None:
             if handler.formatter is None:
                 handler.setFormatter(formatter)
 
-    log_path = os.environ.get("NOVAOPS_LOG_PATH", "").strip()
+    log_path = os.environ.get("NOVAOPS_LOG_PATH", "novaops.log").strip()
     if not log_path:
-        return
+        log_path = "novaops.log"
 
     try:
         path = Path(log_path)
