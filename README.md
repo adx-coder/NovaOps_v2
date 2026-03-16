@@ -247,12 +247,7 @@ tests/          124 unit + integration tests
 
 The entire NovaOps environment runs inside isolated Docker containers (including a K3s Kubernetes cluster). You only require `docker` and `docker compose` installed on your machine.
 
-### 1. AWS Foundation Model Access
-You must have access to the **Amazon Nova 2 Lite** model in your AWS account.
-- Go to **Amazon Bedrock Console** -> **Model access**.
-- Ensure **Amazon Nova 2 Lite** is granted.
-
-### 2. Environment Setup (`.env`)
+### Environment Setup (`.env`)
 Create a `.env` file in the root directory with your AWS credentials. These are used by the proxy to talk to Bedrock.
 
 ```bash
@@ -260,43 +255,43 @@ AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_DEFAULT_REGION=us-east-1
 NOVA_MODEL_ID=us.amazon.nova-2-lite-v1:0
+SERVICE_REPO_MAP='{"payment-service":{"owner":"acme","repo":"payment-api"},"order-service":{"owner":"acme","repo":"order-api"},"inventory-service":{"owner":"acme","repo":"inventory-api"},"auth-service":{"owner":"acme","repo":"auth-api"},"user-service":{"owner":"acme","repo":"user-api"},"dummy-service":{"owner":"acme","repo":"dummy-api"}}'
 ```
 
 ---
 
-## Operational Readiness & Performance Validation
+## Operations Guide
 
-To seamlessly evaluate the entire Amazon Nova Auto-SRE ecosystem from start to finish, you only need to execute four simple scripts in order:
+This section outlines the standard procedures for launching the isolated environment and safely executing automated failure injection for SRE validation purposes.
 
-### 1. Start the System
-Brings the entire backend API, LocalStack, and K3s cluster online inside Docker. All logs are piped into one master log file.
+### 1. Initialize the Environment
+Launch the backend services (API, LocalStack, and K3s) through Docker Compose. All components are self-contained.
 ```bash
 ./start_war_room.sh
 ```
-*Wait ~15 seconds for the Docker containers to spin up. You can view progress using `tail -f novaops_system.log`.*
+*Wait ~15 seconds for Kubernetes components to initialize. Monitor via `docker compose logs -f`.*
 
-### 2. Run 7 Simulated Incidents (Mocked)
-Fires 7 deterministic, test-case incidents into the AWS Bedrock pipeline. This populates your dashboard with rich War Room and Jury investigation records to evaluate system performance.
+### 2. Automated Runbook Verification (Simulated Incidents)
+To validate the system's reasoning engine across the full incident schema (OOM, Deadlock, Traffic Surge, Cascading Failure, Config Drift), invoke the evaluation suite.
 ```bash
-docker compose exec -T novaops-api python -m evaluation --all
+./run_simulations.sh
 ```
-*Open `http://localhost:8082/dashboard/` to view their deep analysis.*
+*Verification results are recorded automatically to the telemetry dashboard at `http://localhost:8082/dashboard/`.*
 
-### 3. Run a Live System Failure
-Forces an Out-Of-Memory (OOM) leak on a live K3s service. The NovaOps Agent will detect it, investigate it, draft a remediation, and execute a **real-time simulated phone call** to ask you for verbal approval using the Amazon Nova 2 Sonic model!
+### 3. Live Failure Injection Validation
+To continuously validate the host integration with the live Kubernetes daemon, invoke the synthetic OOM failure script. This forces an out-of-memory exception on a targeted pod for agent validation.
 ```bash
 ./trigger_live_outage.sh
 ```
 
-### 4. Stop Everything
-Cleanly destroys the Docker network, shuts off Minikube, kills background loggers, and leaves your system tidy.
+### 4. Teardown
+To cleanly de-allocate all resources, persistent volumes, and Docker networks:
 ```bash
 ./stop_war_room.sh
 ```
 
 - Dashboard: `http://localhost:8082/`
 - API docs (Swagger): `http://localhost:8082/docs` (served via `/novaops.json`)
-- 
 
 ### API endpoints
 

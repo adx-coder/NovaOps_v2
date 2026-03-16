@@ -107,6 +107,49 @@ def run_scenario(scenario: dict) -> dict:
         print(f"  Schema: {schema_score:.0%} ({schema_quality})")
         print(f"  Time: {elapsed:.1f}s")
 
+        # Log to Database for Dashboard Display
+        try:
+            from api.history_db import get_incident_db
+            
+            # Generate a mock incident ID for the evaluation scenario
+            timestamp_str = datetime.now().strftime("%Y%m%d-%H%M%S")
+            mock_incident_id = f"eval-scen{scenario['id']}-{timestamp_str}"
+            
+            # Extract service name gracefully from triage or fallback to unknown
+            service_name_inferred = "unknown"
+            if war_room.triage and war_room.triage.service_name:
+                service_name_inferred = war_room.triage.service_name
+            
+            # Build human-readable analysis for the dashboard
+            analysis_parts = []
+            if war_room.root_cause and war_room.root_cause.top_hypothesis:
+                h = war_room.root_cause.top_hypothesis
+                analysis_parts.append(h.description)
+                if h.recommended_action:
+                    analysis_parts.append(f"Recommended action: {h.recommended_action}")
+                analysis_parts.append(f"Confidence: {h.confidence:.0%}")
+            if war_room.root_cause and war_room.root_cause.reasoning_chain:
+                analysis_parts.append(f"Reasoning: {war_room.root_cause.reasoning_chain}")
+            if war_room.critic and war_room.critic.feedback:
+                analysis_parts.append(f"Critic: {war_room.critic.feedback}")
+            analysis_display = "\n".join(analysis_parts) or result_text[:500]
+
+            db = get_incident_db()
+            db.log_incident(
+                incident_id=mock_incident_id,
+                service_name=service_name_inferred,
+                alert_name=f"[SIMULATION] {scenario['name']} | expected: {expected}",
+                domain=domain,
+                severity="P1",  # Mocking severity for simulation dash
+                analysis=analysis_display,
+                proposed_action=proposed_action,
+                status="completed" if tool_found and domain_correct else "failed",
+                report_path="",
+            )
+            print(f"  Dashboard: Saved to DB as {mock_incident_id}")
+        except Exception as db_exc:
+            print(f"  Dashboard Error: Failed to log to DB - {db_exc}")
+
         return {
             "scenario_id": scenario["id"],
             "scenario_name": scenario["name"],
