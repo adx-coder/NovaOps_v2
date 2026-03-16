@@ -15,10 +15,8 @@ Built for Enterprise scale incident management using Amazon Nova foundational mo
 - **Slack Critical Escalation**: High-visibility fallback Slack messages with call status, escalation reasons, and approval buttons — sent alongside or instead of the phone call.
 - **Amazon Nova Sonic Integration**: Live, real-time simulated voice calls via AWS Bedrock for human-in-the-loop action approval.
 - **Unified Telemetry Dashboard**: Complete, colorized logging of all War Room, Jury, and API operations piped directly into a single `novaops_system.log` stream.
-- **Streamlined Operation & Deployment**: A refined 4-script demonstration framework executing automated system orchestration, sandboxed scenario injection, and live failure testing.
-- Jury deliberation now executes concurrently via `ThreadPoolExecutor` with per-juror timeout isolation.
-- Jury GitHub context is now configurable by service using `SERVICE_REPO_MAP` and can be overridden per alert using webhook `metadata.github`.
-- Governance now hard-gates convergence disagreements and jury escalations to `REQUIRE_APPROVAL` regardless of policy auto-allow.
+- **Enterprise-Grade Architectural Rebranding**: Transitioned conceptually to a Consensus-driven validation model featuring the **Consensus Engine** and **Independent Validators**, supported by a new professional **Onboarding & Operational Validation** guide.
+- **Enhanced Operational Stability & Hardening**: Implemented self-healing system startups, robust cross-environment `kubectl` orchestration, and high-fidelity failure investigation logging for 100% visibility in the telemetry dashboard.
 
 ---
 
