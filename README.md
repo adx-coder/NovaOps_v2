@@ -256,6 +256,53 @@ pip install -r requirements.txt
 NOVAOPS_USE_MOCK=1 python -m agents.main "P2 OOM alert on payment-service in prod"
 ```
 
+## Judge Guide: Prerequisites & Setup
+
+To ensure a smooth evaluation, please follow these steps before running the system.
+
+### 1. AWS Foundation Model Access
+You must have access to the **Amazon Nova 2 Lite** model in your AWS account.
+- Go to **Amazon Bedrock Console** -> **Model access**.
+- Ensure **Amazon Nova 2 Lite** is granted.
+
+### 2. AWS IAM Permissions
+The user executing the scripts (e.g., `novaops-user`) requires the following IAM policy to interact with Bedrock:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:InvokeModelWithResponseStream"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+### 3. Environment Setup (`.env`)
+Create a `.env` file in the root directory with your AWS credentials. These are used by the agents running on your host machine to talk to Bedrock and LocalStack.
+
+```bash
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_DEFAULT_REGION=us-east-1
+NOVA_MODEL_ID=us.amazon.nova-2-lite-v1:0
+```
+*(Note: If using LocalStack for everything except Bedrock, dummy keys `test`/`test` will work for DynamoDB/S3, but real keys are required for Bedrock analysis.)*
+
+### 4. One-Time System Preparation
+Run the setup script to install dependencies, create a virtual environment, and pre-pull Docker/Kubernetes images. This ensures live simulations trigger instantly.
+```bash
+./setup_mini_system.sh
+```
+
+---
+
 ## Evaluation & Demonstration
 
 To seamlessly evaluate the entire Amazon Nova Auto-SRE ecosystem from start to finish, you only need to execute four simple scripts in order:

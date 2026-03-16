@@ -24,6 +24,8 @@ echo ""
 
 # 1. Start Docker Backend (API + LocalStack)
 echo "🐳 [1/2] Booting Backend API and AWS LocalStack (Docker)..."
+# Ensure previous containers are stopped to avoid name conflicts
+docker compose down >> "$LOG_FILE" 2>&1 || true
 docker compose up -d --build >> "$LOG_FILE" 2>&1
 
 # Tail Docker logs in the background and append them to our global log stream

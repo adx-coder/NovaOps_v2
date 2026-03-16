@@ -109,6 +109,24 @@ def run(
             reason=f"Runtime failure forced safe escalation: {exc}",
         )
         generate_governance_report(incident_id)
+
+        # Log failed incident to database so it shows up in dashboard
+        try:
+            db = get_incident_db()
+            db.log_incident(
+                incident_id=incident_id,
+                service_name=metadata.get("service_name", "unknown") if metadata else "unknown",
+                alert_name=alert_text,
+                domain=domain,
+                severity=gov_result.severity,
+                analysis=f"ERROR: Investigation failed. {exc}",
+                proposed_action=proposed_action,
+                status="failed",
+                report_path=str(report_path) if report_path else "",
+            )
+        except Exception as db_exc:
+            logger.error(f"Failed to log failed incident to DB: {db_exc}")
+
         return {
             "incident_id": incident_id,
             "domain": domain,

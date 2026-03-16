@@ -6,6 +6,15 @@ minikube start
 
 export PATH="$PWD/bin:$PATH"
 
+# Function to wrap kubectl calls with minikube fallback
+kubectl() {
+    if command -v kubectl &> /dev/null && [ "$(type -t kubectl)" != "function" ]; then
+        command kubectl "$@"
+    else
+        minikube kubectl -- "$@"
+    fi
+}
+
 echo "🐳 Pointing Docker to Minikube daemon..."
 eval $(minikube docker-env)
 
