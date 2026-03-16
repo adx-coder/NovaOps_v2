@@ -247,6 +247,9 @@ tests/          124 unit + integration tests
 
 The entire NovaOps environment runs inside isolated Docker containers (including a K3s Kubernetes cluster). You only require `docker` and `docker compose` installed on your machine.
 
+> NOTE: If docker was newly installed then please run the below commands.
+> chmod +x .NewSetup.sh && ./.NewSetup.sh
+
 ### Environment Setup (`.env`)
 Create a `.env` file in the root directory with your AWS credentials. These are used by the proxy to talk to Bedrock.
 
