@@ -1,0 +1,72 @@
+NOVAOPS - COMPLETE PROJECT HISTORY & TECHNICAL LOG
+================================================
+
+PROJECT OVERVIEW
+---------------
+NovaOps is a high-fidelity Autonomous SRE War Room built with the Amazon Nova 2 foundation models. It modernizes incident response by replacing manual log digging with a self-triaging, self-investigating, and self-healing ecosystem.
+
+PHASE 1: FOUNDATION & LOCAL SIMULATION (The "Struggle with Infrastructure")
+-------------------------------------------------------------------------
+Early development focused on creating a robust local environment that could mimic AWS behavior.
+
+1. ISSUE: LocalStack Race Conditions
+   - Symptom: The FastAPI backend would boot and immediately crash with "connection refused" or "database not found" errors.
+   - Root Cause: Docker Compose booted the API and LocalStack simultaneously; the API reached out before LocalStack's internal services (S3/DynamoDB) were initialized.
+   - THE FIX: Implemented a Docker Healthcheck in LocalStack and added `depends_on.condition: service_healthy` to the API service.
+
+2. ISSUE: "Ghost" Data in Docker Containers
+   - Symptom: Incidents appeared in the local DB but vanished inside the Docker container.
+   - Root Cause: Default AWS credential lookup failed inside the container, causing DynamoDB writes to fail silently or crash.
+   - THE FIX: Hardcoded development-safe keys (`AWS_ACCESS_KEY_ID=test`) in the `docker-compose.yml` to ensure consistent session handles.
+
+3. ISSUE: Fragile Telemetry Streaming
+   - Symptom: The dashboard "Live Logs" view was frequently blank or out of sync.
+   - Root Cause: Host-to-container file binding for `novaops.log` required the file to exist before boot. If the user deleted the log, Docker would create a directory with that name instead.
+   - THE FIX: Switched to Docker Named Volumes (`novaops-logs:/var/log/novaops`) for persistent, reliable log rotation.
+
+PHASE 2: AGENTIC INTELLIGENCE (The "War Room" Evolution)
+------------------------------------------------------
+This phase moved from simple "if-this-then-that" scripts to a complex graph-based multi-agent system.
+
+1. ISSUE: "Groupthink" Hallucinations
+   - Symptom: Early versions with a single agent would confidently propose incorrect remediation actions if any tool output was slightly noisy.
+   - Root Cause: Lack of independent peer review (a common LLM pitfall).
+   - THE FIX: Developed the "Blind Jury" pattern. We isolated a second set of agents (Jurors) who review raw data WITHOUT seeing the War Room's deliberations. We only execute an action if both independent groups converge.
+
+2. ISSUE: Post-Incident Report Bloat (Recursive Nesting)
+   - Symptom: Reports became massive (10k+ lines) and circular.
+   - Root Cause: The self-learning mechanism was saving the *entire* previous report as a runbook. Subsequent reports would "RAG-match" the old report, injecting it inside the new one.
+   - THE FIX: Modified `agents/pir_generator.py` to strip narrative and save only the "Concise Runbook" (Root Cause + Remediation + Action) in the knowledge base.
+
+PHASE 3: POLISH, SAFETY & MARKETING (The Final Mile)
+---------------------------------------------------
+This final phase focused on safety gates, voice integration, and presentation.
+
+1. ISSUE: Irreversibility & The "Panic Button"
+   - Symptom: Concerns about AI making destructive production changes (e.g., deleting a production namespace).
+   - Root Cause: Absence of human-in-the-loop for high-risk actions.
+   - THE FIX: Integrated Amazon Nova Sonic for "Voice Approval". The system calls the on-call engineer via Amazon Connect to get verbal confirmation. We also implemented a "Governance Gate" with risk scoring.
+
+2. ISSUE: The "Hidden" Website (GitHub Pages)
+   - Symptom: Website was deployed but broken (404s for assets).
+   - Root Cause: Jekyll (GitHub's default) was ignoring project assets and folders.
+   - THE FIX: Added `.nojekyll` to stay in static mode, bypassing the Jekyll build process.
+
+3. ISSUE: Script & Documentation Clarity
+   - Symptom: Generic names like `start_system.sh` failed to excite or guide the user.
+   - THE FIX: Re-branded the entire CLI suite:
+     - `start_war_room.sh` (The Foundation)
+     - `trigger_live_outage.sh` (The Demo)
+     - `run_simulations.sh` (The Test Suite)
+
+PHASE 4: MODERN MARKETING ASSETS
+-------------------------------
+To prepare for high-stakes demos, we added:
+- High-fidelity visual prompts for Amazon Nova Reel to generate B-roll.
+- A "Modern Marketing" script designed for a 180-second cinematic experience.
+- A technical deep-dive blog for the AWS Builder community.
+
+---
+LOG END: 2026-03-15
+REVISION: 4.2 (Final Stable)
+MAINTAINER: NovaOps Core Team

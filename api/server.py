@@ -782,6 +782,18 @@ def get_pdf_download_url(key: str):
             },
             ExpiresIn=3600,
         )
+        
+        # If running in Docker, the 'localstack' hostname in the URL won't resolve on the host.
+        # We replace it with S3_PUBLIC_ENDPOINT (e.g. http://localhost:4566) if configured.
+        public_endpoint = os.environ.get("S3_PUBLIC_ENDPOINT", "").strip()
+        if public_endpoint:
+            # Simple replacement of the internal endpoint with the public one
+            internal_base = s3_endpoint.rstrip('/')
+            public_base = public_endpoint.rstrip('/')
+            if internal_base in url:
+                url = url.replace(internal_base, public_base)
+                logger.debug(f"Rewrote S3 URL for host access: {url}")
+
         return {"status": "success", "download_url": url}
     except Exception as e:
         logger.error(f"Failed to generate presigned URL: {e}")

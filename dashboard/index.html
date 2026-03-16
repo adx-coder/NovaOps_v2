@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="background-grid"></div>
     <div class="blob blob-1"></div>
@@ -33,8 +35,8 @@
                         <h3>Model Engine</h3>
                         <i class="fa-brands fa-aws"></i>
                     </div>
-                    <div class="stat-value">Amazon Nova Pro</div>
-                    <div class="stat-subtitle">300K Context Window</div>
+                    <div class="stat-value">Amazon Nova 2 Lite</div>
+                    <div class="stat-subtitle">1M Context Window</div>
                 </div>
 
                 <div class="glass-card stat-card">
@@ -48,7 +50,9 @@
 
                 <div class="glass-card info-card">
                     <h3>Enterprise Architecture</h3>
-                    <p>In a production AWS environment, this telemetry feed is natively ingested by <strong>Amazon DynamoDB</strong> and visualized via <strong>Amazon QuickSight</strong> or <strong>Managed Grafana</strong> without requiring custom frontend infrastructure.</p>
+                    <p>In a production AWS environment, this telemetry feed is natively ingested by <strong>Amazon
+                            DynamoDB</strong> and visualized via <strong>Amazon QuickSight</strong> or <strong>Managed
+                            Grafana</strong> without requiring custom frontend infrastructure.</p>
                 </div>
             </section>
 
@@ -57,7 +61,8 @@
                 <div class="feed-header">
                     <div class="feed-tabs">
                         <h2 class="tab-btn active" data-target="feed-view">Incident Resolutions</h2>
-                        <h2 class="tab-btn" data-target="logs-view">Live Telemetry Logs <span class="live-dot"></span></h2>
+                        <h2 class="tab-btn" data-target="logs-view">Live Telemetry Logs <span class="live-dot"></span>
+                        </h2>
                     </div>
                     <div class="feed-actions">
                         <select id="sort-select" class="glass-select">
@@ -67,7 +72,7 @@
                         <button id="refresh-btn" class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                 </div>
-                
+
                 <!-- View 1: Incidents Feed -->
                 <div id="feed-view" class="view-section active">
                     <div class="feed-filters" id="filter-container">
@@ -86,9 +91,12 @@
                     </div>
 
                     <div class="pagination-controls" id="pagination-controls" style="display: none;">
-                        <button id="prev-page" class="ghost-btn" disabled><i class="fa-solid fa-chevron-left"></i> Prev</button>
-                        <div class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></div>
-                        <button id="next-page" class="ghost-btn" disabled>Next <i class="fa-solid fa-chevron-right"></i></button>
+                        <button id="prev-page" class="ghost-btn" disabled><i class="fa-solid fa-chevron-left"></i>
+                            Prev</button>
+                        <div class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span>
+                        </div>
+                        <button id="next-page" class="ghost-btn" disabled>Next <i
+                                class="fa-solid fa-chevron-right"></i></button>
                     </div>
                 </div>
 
@@ -96,11 +104,16 @@
                 <div id="logs-view" class="view-section">
                     <div class="log-filters" id="log-filter-container">
                         <button class="filter-btn active" data-log-filter="all">All</button>
-                        <button class="filter-btn" data-log-filter="Nova-Agent"><i class="fa-solid fa-brain"></i> Nova-Agent</button>
-                        <button class="filter-btn" data-log-filter="Jury-Gov"><i class="fa-solid fa-gavel"></i> Jury & Gov</button>
-                        <button class="filter-btn" data-log-filter="Event-API"><i class="fa-solid fa-bolt"></i> Event-API</button>
-                        <button class="filter-btn" data-log-filter="K8s-Prom"><i class="fa-solid fa-dharmachakra"></i> K8s-Prom</button>
-                        <button class="filter-btn" data-log-filter="Dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+                        <button class="filter-btn" data-log-filter="Nova-Agent"><i class="fa-solid fa-brain"></i>
+                            Nova-Agent</button>
+                        <button class="filter-btn" data-log-filter="Jury-Gov"><i class="fa-solid fa-gavel"></i> Jury &
+                            Gov</button>
+                        <button class="filter-btn" data-log-filter="Event-API"><i class="fa-solid fa-bolt"></i>
+                            Event-API</button>
+                        <button class="filter-btn" data-log-filter="K8s-Prom"><i class="fa-solid fa-dharmachakra"></i>
+                            K8s-Prom</button>
+                        <button class="filter-btn" data-log-filter="Dashboard"><i class="fa-solid fa-chart-line"></i>
+                            Dashboard</button>
                     </div>
                     <div class="terminal-container">
                         <div class="terminal-header">
@@ -117,7 +130,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </section>
         </main>
     </div>
@@ -131,17 +144,19 @@
                     <h3 class="alert-name">Alert Name</h3>
                 </div>
                 <div class="incident-meta">
-                    <span class="service-tag"><i class="fa-solid fa-server"></i> <span class="service-name">service</span></span>
-                    <span class="timestamp"><i class="fa-regular fa-clock"></i> <span class="time-str">Just now</span></span>
+                    <span class="service-tag"><i class="fa-solid fa-server"></i> <span
+                            class="service-name">service</span></span>
+                    <span class="timestamp"><i class="fa-regular fa-clock"></i> <span class="time-str">Just
+                            now</span></span>
                 </div>
             </div>
-            
+
             <div class="incident-body">
                 <div class="rca-section">
                     <h4><i class="fa-solid fa-brain"></i> Agent Root Cause Analysis</h4>
                     <p class="analysis-text">Loading deductive reasoning...</p>
                 </div>
-                
+
                 <div class="action-section">
                     <h4><i class="fa-solid fa-terminal"></i> Proposed Mitigation</h4>
                     <div class="code-block">
@@ -150,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="incident-footer">
                 <div class="status-indicator">
                     <i class="fa-solid fa-circle-check"></i> <span class="status-text">Plan Generated</span>
@@ -159,7 +174,8 @@
                     <button class="ghost-btn pir-btn" title="Generate Post-Incident Report">
                         <i class="fa-solid fa-file-lines"></i> Post-Incident Report
                     </button>
-                    <button class="ghost-btn" title="View Full Trace"><i class="fa-solid fa-code-fork"></i> ReAct Trace</button>
+                    <button class="ghost-btn" title="View Full Trace"><i class="fa-solid fa-code-fork"></i> ReAct
+                        Trace</button>
                 </div>
             </div>
         </div>
@@ -197,4 +213,5 @@
 
     <script src="app.js?v=2"></script>
 </body>
+
 </html>

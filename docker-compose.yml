@@ -35,6 +35,7 @@ services:
       - AWS_EC2_METADATA_DISABLED=true
       - DYNAMODB_ENDPOINT=http://localstack:4566
       - S3_ENDPOINT=http://localstack:4566
+      - S3_PUBLIC_ENDPOINT=http://localhost:4566
       - NOVAOPS_LOG_PATH=/var/log/novaops/novaops.log
       - NOVAOPS_USE_MOCK=1
     volumes:
