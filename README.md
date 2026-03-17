@@ -1,6 +1,6 @@
 # NovaOps
 
-**Autonomous multi-agent SRE war room powered by Amazon Nova 2 Lite — with independent jury validation.**
+**Autonomous multi-agent SRE war room powered by Amazon Nova 2 Lite, with independent jury validation.**
 
 NovaOps v2 responds to production alerts end-to-end: it triages the incident, dispatches four specialist analysts in parallel, reasons over their findings, validates the reasoning path with an adversarial critic, then runs a completely independent jury validation before gating the action through a policy engine. Every decision is logged to an append-only audit trail. Human override is always available.
 
@@ -54,17 +54,17 @@ Alert (POST /webhook/pagerduty)
 │  4 specialist jurors deliberate in parallel              │
 │  on raw incident context — no war room influence         │
 │                                                          │
-│  ┌────────────────┐  ┌──────────────────────────────┐   │
+│  ┌────────────────┐  ┌───────────────────────────────┐   │
 │  │ Log Analyst    │  │ Infra Specialist              │   │
 │  │ logs, OOM,     │  │ K8s pod health, CPU/mem       │   │
 │  │ crash traces   │  │ OOMKilled, scaling signals    │   │
-│  └────────────────┘  └──────────────────────────────┘   │
-│  ┌────────────────┐  ┌──────────────────────────────┐   │
+│  └────────────────┘  └───────────────────────────────┘   │
+│  ┌────────────────┐  ┌───────────────────────────────┐   │
 │  │ Deploy         │  │ Anomaly Specialist            │   │
 │  │ Specialist     │  │ Layer 1: RAG signal           │   │
 │  │ git commits,   │  │ Layer 2: regex pattern scan   │   │
 │  │ config regs    │  │ Layer 3: LLM residual         │   │
-│  └────────────────┘  └──────────────────────────────┘   │
+│  └────────────────┘  └───────────────────────────────┘   │
 │                │                                         │
 │             Judge LLM — synthesises 4 verdicts           │
 │             Escalation Gate — 6 safety checks            │
@@ -76,7 +76,7 @@ Alert (POST /webhook/pagerduty)
 │                                                          │
 │  War Room action == Jury action?                         │
 │                                                          │
-│  AGREE  + no jury escalation                            │
+│  AGREE  + no jury escalation                             │
 │    → confidence boosted (+0.15)                          │
 │    → GovernanceGate may ALLOW_AUTO                       │
 │                                                          │
@@ -94,16 +94,16 @@ Alert (POST /webhook/pagerduty)
 └──────────────────────────────────────────────────────────┘
                              │
                              ▼
-┌──────────────────────────────────────────────────────────┐
-│  EXECUTION & APPROVAL                                    │
-│                                                          │
-│  ALLOW_AUTO ───────► Auto-Remediate (K8s API)            │
-│  REQUIRE_APPROVAL ─► Escalation Policy Check             │
+┌───────────────────────────────────────────────────────────┐
+│  EXECUTION & APPROVAL                                     │
+│                                                           │
+│  ALLOW_AUTO ───────► Auto-Remediate (K8s API)             │
+│  REQUIRE_APPROVAL ─► Escalation Policy Check              │
 │    ├─ CRITICAL ────► Amazon Connect Outbound Call         │
 │    │                 (Nova real-time voice via Lex/Lambda)│
 │    │                 + Slack Critical Escalation          │
-│    └─ NORMAL ──────► Slack Ghost Mode Notification       │
-└──────────────────────────────────────────────────────────┘
+│    └─ NORMAL ──────► Slack Ghost Mode Notification        │
+└───────────────────────────────────────────────────────────┘
 ```
 
 All agent outputs are validated against typed schemas and written to `plans/{incident_id}/` as inspectable JSON artifacts.
